@@ -6,9 +6,7 @@ package me.erickren.request;
  * @since 0.0.1
  */
 public interface RequestLine {
-    RequestMethod method = null;
-    HttpUrl HttpUrl = null;
-    String HttpVersion = "HTTP/1.1";
+
 
     /**
      * Set the request method.
