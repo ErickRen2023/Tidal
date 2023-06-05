@@ -73,6 +73,12 @@ public interface RequestUrl {
     RequestUrl setPaths(List<String> path);
 
     /**
+     * Build the path.
+     * @return path
+     */
+    String getPath();
+
+    /**
      * Add a param to the parameters of the HttpUrl.
      * @param name param key.
      * @param value param value.

@@ -1,94 +1,125 @@
 package me.erickren.request;
 
 import me.erickren.response.HttpResponse;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.MalformedURLException;
+import java.net.Socket;
 
 public class HttpRequestImpl implements HttpRequest{
-    RequestLine line;
-    RequestHeader header;
-    RequestData data;
+    RequestLine requestLine;
+    RequestHeader requestHeader;
+    RequestData requestData;
 
-    public HttpRequestImpl(RequestLine line, RequestHeader header, RequestData data) {
-        this.line = line;
-        this.header = header;
-        this.data = data;
+    public HttpRequestImpl(RequestLine requestLine, RequestHeader requestHeader, RequestData requestData) {
+        this.requestLine = requestLine;
+        this.requestHeader = requestHeader;
+        this.requestData = requestData;
     }
 
-    public HttpRequestImpl(RequestLine line) {
-        this.line = line;
+    public HttpRequestImpl(RequestLine requestLine) {
+        this.requestLine = requestLine;
     }
 
-    public HttpRequestImpl(String line) throws MalformedURLException, UnsupportedEncodingException {
-        this.line = new RequestLineImpl(line);
-    }
-
-    @Override
-    public void setLine(RequestLine line) {
-        this.line = line;
+    public HttpRequestImpl(String requestLine) throws MalformedURLException, UnsupportedEncodingException {
+        this.requestLine = new RequestLineImpl(requestLine);
     }
 
     @Override
-    public void setHeader(RequestHeader header) {
-        this.header = header;
+    public void setRequestLine(RequestLine requestLine) {
+        this.requestLine = requestLine;
     }
 
     @Override
-    public void setData(RequestData data) {
-        this.data = data;
+    public void setRequestHeader(RequestHeader requestHeader) {
+        this.requestHeader = requestHeader;
+    }
+
+    @Override
+    public void setRequestData(RequestData requestData) {
+        this.requestData = requestData;
     }
 
     @Override
     public void setUrl(String url) throws MalformedURLException, UnsupportedEncodingException {
-        this.line.setHttpUrl(url);
+        this.requestLine.setHttpUrl(url);
     }
 
     @Override
     public void setUrl(RequestUrl url) {
-        this.line.setHttpUrl(url);
+        this.requestLine.setHttpUrl(url);
     }
 
     @Override
-    public HttpResponse Get() {
-        this.line.setMethod(RequestMethod.GET);
-        return this.Request(this);
+    public RequestLine getRequestLine() {
+        return this.requestLine;
     }
 
     @Override
-    public HttpResponse Post(RequestData data) {
-        this.line.setMethod(RequestMethod.POST);
-        return this.Request(this);
+    public HttpResponse get() throws IOException {
+        this.requestLine.setMethod(RequestMethod.GET);
+        return this.request(this);
     }
 
     @Override
-    public HttpResponse Options() {
-        this.line.setMethod(RequestMethod.OPTIONS);
-        return this.Request(this);
+    public HttpResponse post(RequestData data) throws IOException {
+        this.requestLine.setMethod(RequestMethod.POST);
+        return this.request(this);
     }
 
     @Override
-    public HttpResponse Put() {
-        this.line.setMethod(RequestMethod.PUT);
-        return this.Request(this);
+    public HttpResponse options() throws IOException {
+        this.requestLine.setMethod(RequestMethod.OPTIONS);
+        return this.request(this);
     }
 
     @Override
-    public HttpResponse Delete() {
-        this.line.setMethod(RequestMethod.DELETE);
-        return this.Request(this);
+    public HttpResponse put() throws IOException {
+        this.requestLine.setMethod(RequestMethod.PUT);
+        return this.request(this);
     }
 
     @Override
-    public HttpResponse Head() {
-        this.line.setMethod(RequestMethod.HEAD);
-        return this.Request(this);
+    public HttpResponse delete() throws IOException {
+        this.requestLine.setMethod(RequestMethod.DELETE);
+        return this.request(this);
     }
 
     @Override
-    public HttpResponse Request(HttpRequest request) {
-        throw new NotImplementedException();
-        //return null;
+    public HttpResponse head() throws IOException {
+        this.requestLine.setMethod(RequestMethod.HEAD);
+        return this.request(this);
+    }
+
+    @Override
+    public HttpResponse request(HttpRequest request) throws IOException {
+        String host = request.getRequestLine().getRequestUrl().getHost();
+        Integer port = request.getRequestLine().getRequestUrl().getPort();
+        StringBuilder requestBuilder = new StringBuilder();
+        requestBuilder.append(request.getRequestLine().getMethod().toString())
+                .append(" ")
+                .append(request.getRequestLine().getRequestUrl().getPath())
+                .append(" ")
+                .append(request.getRequestLine().getHttpVersion())
+                .append("\r\n")
+                .append("Host: ")
+                .append(host)
+                .append("\r\n")
+                .append("Connection: close\r\n\r\n");
+        Socket socket = new Socket(host, port);
+        OutputStream outputStream = socket.getOutputStream();
+        outputStream.write(requestBuilder.toString().getBytes());
+
+        // 接收HTTP响应
+        InputStream inputStream = socket.getInputStream();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            System.out.println(line);
+        }
+
+        // 关闭连接
+        socket.close();
+        return null;
     }
 }

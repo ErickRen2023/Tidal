@@ -94,6 +94,16 @@ public class RequestUrlImpl implements RequestUrl {
     }
 
     @Override
+    public String getPath() {
+        StringBuilder sb = new StringBuilder();
+        for (String s : path) {
+            sb.append("/");
+            sb.append(s);
+        }
+        return sb.toString();
+    }
+
+    @Override
     public RequestUrl addParameter(String name, String value) {
         this.parameter.put(name, value);
         return this;
@@ -116,15 +126,17 @@ public class RequestUrlImpl implements RequestUrl {
             this.setPort(url.getPort());
         }
         this.setPaths(url.getPath());
-        String[] params = url.getQuery().split("&");
-        for (String param : params) {
-            String[] keyValue = param.split("=");
-            String key = URLDecoder.decode(keyValue[0], "UTF-8");
-            String value="";
-            if (keyValue.length > 1) {
-                value = URLDecoder.decode(keyValue[1], "UTF-8");
+        if (url.getQuery() != null) {
+            String[] params = url.getQuery().split("&");
+            for (String param : params) {
+                String[] keyValue = param.split("=");
+                String key = URLDecoder.decode(keyValue[0], "UTF-8");
+                String value = "";
+                if (keyValue.length > 1) {
+                    value = URLDecoder.decode(keyValue[1], "UTF-8");
+                }
+                this.addParameter(key, value);
             }
-            this.addParameter(key, value);
         }
         return this;
     }
