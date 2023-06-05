@@ -1,15 +1,16 @@
 package me.erickren;
 
-import me.erickren.request.HttpUrl;
-import me.erickren.request.HttpUrlImpl;
+import me.erickren.request.RequestUrl;
+import me.erickren.request.RequestUrlImpl;
 
 public class Main {
     public static void main(String[] args) throws Exception {
         String host = "www.baidu.com";
         int port = 80;
         String path = "/";
-        HttpUrl httpUrl = new HttpUrlImpl("https://juejin.cn/s/java%20url%20%E5%8F%82%E6%95%B0%E8%A7%A3%E6%9E%90?argument=1&age=2");
-        System.out.println(httpUrl.build());
+        RequestUrl requestUrl = new RequestUrlImpl("https://juejin.cn/s/java%20url%20%E5%8F%82%E6%95%B0%E8%A7%A3%E6%9E%90?argument=1&age=2&age=3");
+
+        System.out.println(requestUrl.build());
 
 
 //        // 创建socket连接

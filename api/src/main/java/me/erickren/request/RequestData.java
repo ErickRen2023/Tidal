@@ -7,4 +7,6 @@ package me.erickren.request;
  */
 public interface RequestData {
 
+
+
 }

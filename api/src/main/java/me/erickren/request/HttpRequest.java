@@ -2,6 +2,9 @@ package me.erickren.request;
 
 import me.erickren.response.HttpResponse;
 
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+
 /**
  * Http connection Object.
  * @author ErickRen
@@ -31,13 +34,13 @@ public interface HttpRequest {
      * Set the request url by String Object.
      * @param url url
      */
-    void setUrl(String url);
+    void setUrl(String url) throws MalformedURLException, UnsupportedEncodingException;
 
     /**
      * Set the request url by HttpUrl Object.
      * @param url url
      */
-    void setUrl(HttpUrl url);
+    void setUrl(RequestUrl url);
 
     /**
      * Send the GET request.
@@ -74,5 +77,11 @@ public interface HttpRequest {
      * @return HttpResponse
      */
     HttpResponse Head();
+
+    /**
+     * Send the request by the RequestLine method.
+     * @return
+     */
+    HttpResponse Request(HttpRequest request);
 
 }

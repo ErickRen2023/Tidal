@@ -10,14 +10,14 @@ import java.util.List;
  * @author ErickRen
  * @since 0.0.1
  */
-public interface HttpUrl {
+public interface RequestUrl {
 
     /**
      * Set the protocol of request in HttpUrl.
      * @param protocol protocol
      * @return HttpUrl
      */
-    HttpUrl setProtocol(String protocol);
+    RequestUrl setProtocol(String protocol);
 
     /**
      * Get the http protocol.
@@ -30,7 +30,7 @@ public interface HttpUrl {
      * @param host host
      * @return HttpUrl
      */
-    HttpUrl setHost(String host);
+    RequestUrl setHost(String host);
 
     /**
      * Get the host.
@@ -43,7 +43,7 @@ public interface HttpUrl {
      * @param port port
      * @return HttpUrl
      */
-    HttpUrl setPort(Integer port);
+    RequestUrl setPort(Integer port);
 
     /**
      * Get the port.
@@ -56,21 +56,21 @@ public interface HttpUrl {
      * @param path String -> path
      * @return HttpUrl
      */
-    HttpUrl addPath(String path);
+    RequestUrl addPath(String path);
 
     /**
      * Set the paths on the HttpUrl.
      * @param path String -> paths like: http://host:port/[path1/path2/...]
      * @return HttpUrl
      */
-    HttpUrl setPaths(String path) throws UnsupportedEncodingException;
+    RequestUrl setPaths(String path) throws UnsupportedEncodingException;
 
     /**
      * Set the paths on the HttpUrl.
      * @param path List:String -> paths
      * @return HttpUrl
      */
-    HttpUrl setPaths(List<String> path);
+    RequestUrl setPaths(List<String> path);
 
     /**
      * Add a param to the parameters of the HttpUrl.
@@ -78,14 +78,14 @@ public interface HttpUrl {
      * @param value param value.
      * @return HttpUrl
      */
-    HttpUrl addParameter(String name, String value);
+    RequestUrl addParameter(String name, String value);
 
     /**
      * Set the parameters on the HttpUrl.
      * @param parameter List:HashMap -> key:String value:String
      * @return HttpUrl
      */
-    HttpUrl setParameter(HashMap<String, String> parameter);
+    RequestUrl setParameter(HashMap<String, String> parameter);
 
     /**
      * Build the HttpUrl.
@@ -98,7 +98,7 @@ public interface HttpUrl {
      * @param path String path.
      * @return HttpUrl Object
      */
-    HttpUrl parseUrlByString(String path) throws MalformedURLException, UnsupportedEncodingException;
+    RequestUrl parseUrlByString(String path) throws MalformedURLException, UnsupportedEncodingException;
 
     /**
      * Build the url.
