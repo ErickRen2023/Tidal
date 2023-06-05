@@ -1,6 +1,5 @@
 package me.erickren.request;
 
-import com.sun.istack.internal.Nullable;
 import me.erickren.response.HttpResponse;
 
 /**
@@ -9,9 +8,6 @@ import me.erickren.response.HttpResponse;
  * @since 0.0.1
  */
 public interface HttpRequest {
-    @Nullable RequestLine line = null;
-    @Nullable RequestHeader header = null;
-    @Nullable RequestData data = null;
 
     /**
      * Set the request line.

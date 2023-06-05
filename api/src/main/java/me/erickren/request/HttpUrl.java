@@ -1,8 +1,7 @@
 package me.erickren.request;
 
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
-
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -13,12 +12,6 @@ import java.util.List;
  */
 public interface HttpUrl {
 
-    @NotNull String protocol = "";
-    @NotNull String host = "";
-    @NotNull Integer port = 80;
-    @Nullable List<String> path = null;
-    @Nullable List<HashMap<String, String>> parameter = null;
-
     /**
      * Set the protocol of request in HttpUrl.
      * @param protocol protocol
@@ -27,11 +20,23 @@ public interface HttpUrl {
     HttpUrl setProtocol(String protocol);
 
     /**
-     * Set the host of request in HttpUrl.
+     * Get the http protocol.
+     * @return protocol
+     */
+    String getProtocol();
+
+    /**
+     * Set the host of request in HttpUrl.PS:the method will never check the legality of value.
      * @param host host
      * @return HttpUrl
      */
     HttpUrl setHost(String host);
+
+    /**
+     * Get the host.
+     * @return host
+     */
+    String getHost();
 
     /**
      * Set the port of request,default port is 80.
@@ -39,6 +44,12 @@ public interface HttpUrl {
      * @return HttpUrl
      */
     HttpUrl setPort(Integer port);
+
+    /**
+     * Get the port.
+     * @return Integer
+     */
+    Integer getPort();
 
     /**
      * Add a path to the HttpUrl.
@@ -52,7 +63,7 @@ public interface HttpUrl {
      * @param path String -> paths like: http://host:port/[path1/path2/...]
      * @return HttpUrl
      */
-    HttpUrl setPaths(String path);
+    HttpUrl setPaths(String path) throws UnsupportedEncodingException;
 
     /**
      * Set the paths on the HttpUrl.
@@ -74,11 +85,24 @@ public interface HttpUrl {
      * @param parameter List:HashMap -> key:String value:String
      * @return HttpUrl
      */
-    HttpUrl setParameter(List<HashMap<String, String>> parameter);
+    HttpUrl setParameter(HashMap<String, String> parameter);
 
     /**
      * Build the HttpUrl.
      * @return String HttpUrl.
      */
     String toString();
+
+    /**
+     * Parse the url by String Object.
+     * @param path String path.
+     * @return HttpUrl Object
+     */
+    HttpUrl parseUrlByString(String path) throws MalformedURLException, UnsupportedEncodingException;
+
+    /**
+     * Build the url.
+     * @return String
+     */
+    String build();
 }
