@@ -9,6 +9,7 @@ public class RequestLineImpl implements RequestLine {
 
     private RequestMethod method;
     private RequestUrl requestUrl;
+
     private final String httpVersion = "HTTP/1.1";
 
     public RequestLineImpl(RequestMethod method, RequestUrl requestUrl) {
@@ -18,6 +19,11 @@ public class RequestLineImpl implements RequestLine {
 
     public RequestLineImpl(String url) throws MalformedURLException, UnsupportedEncodingException {
         this.requestUrl = new RequestUrlImpl(url);
+    }
+
+    @Override
+    public String getHttpVersion() {
+        return this.httpVersion;
     }
 
     @Override
@@ -54,6 +60,11 @@ public class RequestLineImpl implements RequestLine {
     @Override
     public void setHttpUrl(String httpUrl) throws MalformedURLException, UnsupportedEncodingException {
         this.requestUrl = new RequestUrlImpl(httpUrl);
+    }
+
+    @Override
+    public RequestUrl getRequestUrl() {
+        return this.requestUrl;
     }
 
     @Override

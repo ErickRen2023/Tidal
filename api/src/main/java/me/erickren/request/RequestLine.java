@@ -11,6 +11,12 @@ import java.net.MalformedURLException;
 public interface RequestLine {
 
     /**
+     * Get Http Version. "HTTP/1.1" only.
+     * @return version
+     */
+    String getHttpVersion();
+
+    /**
      * Set the request method.
      * @param method method
      */
@@ -27,6 +33,12 @@ public interface RequestLine {
      * @param httpUrl url
      */
     void setHttpUrl(String httpUrl) throws MalformedURLException, UnsupportedEncodingException;
+
+    /**
+     * Get the RequestUrl.
+     * @return RequestUrl
+     */
+    RequestUrl getRequestUrl();
 
     /**
      * Get the Request Method.

@@ -2,6 +2,7 @@ package me.erickren.request;
 
 import me.erickren.response.HttpResponse;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 
@@ -14,21 +15,21 @@ public interface HttpRequest {
 
     /**
      * Set the request line.
-     * @param line line
+     * @param requestLine line
      */
-    void setLine(RequestLine line);
+    void setRequestLine(RequestLine requestLine);
 
     /**
      * Set the request header.
-     * @param header header
+     * @param requestHeader header
      */
-    void setHeader(RequestHeader header);
+    void setRequestHeader(RequestHeader requestHeader);
 
     /**
      * Set the request data.If the Request method is not POST,the data will not work.
-     * @param data data
+     * @param requestData data
      */
-    void setData(RequestData data);
+    void setRequestData(RequestData requestData);
 
     /**
      * Set the request url by String Object.
@@ -43,45 +44,51 @@ public interface HttpRequest {
     void setUrl(RequestUrl url);
 
     /**
+     * Get the request line of the Request
+     * @return RequestLine
+     */
+    RequestLine getRequestLine();
+
+    /**
      * Send the GET request.
      * @return HttpResponse
      */
-    HttpResponse Get();
+    HttpResponse get() throws IOException;
 
     /**
      * Send the POST request.
      * @return HttpResponse
      */
-    HttpResponse Post(RequestData data);
+    HttpResponse post(RequestData data) throws IOException;
 
     /**
      * Send the OPTIONS request.
      * @return HttpResponse
      */
-    HttpResponse Options();
+    HttpResponse options() throws IOException;
 
     /**
      * Send the PUT request.
      * @return HttpResponse
      */
-    HttpResponse Put();
+    HttpResponse put() throws IOException;
 
     /**
      * Send the DELETE request.
      * @return HttpResponse
      */
-    HttpResponse Delete();
+    HttpResponse delete() throws IOException;
 
     /**
      * Send the HEAD request.
      * @return HttpResponse
      */
-    HttpResponse Head();
+    HttpResponse head() throws IOException;
 
     /**
      * Send the request by the RequestLine method.
      * @return
      */
-    HttpResponse Request(HttpRequest request);
+    HttpResponse request(HttpRequest request) throws IOException;
 
 }
