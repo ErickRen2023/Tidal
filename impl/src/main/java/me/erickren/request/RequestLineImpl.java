@@ -1,20 +1,27 @@
 package me.erickren.request;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import me.erickren.exception.UnKnowRequestMethodException;
+
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 
 public class RequestLineImpl implements RequestLine {
 
     private RequestMethod method;
-    private HttpUrl HttpUrl;
-    private final String HttpVersion = "HTTP/1.1";
+    private RequestUrl requestUrl;
+    private final String httpVersion = "HTTP/1.1";
 
-    public RequestLineImpl(RequestMethod method, me.erickren.request.HttpUrl httpUrl) {
+    public RequestLineImpl(RequestMethod method, RequestUrl requestUrl) {
         this.method = method;
-        this.HttpUrl = httpUrl;
+        this.requestUrl = requestUrl;
+    }
+
+    public RequestLineImpl(String url) throws MalformedURLException, UnsupportedEncodingException {
+        this.requestUrl = new RequestUrlImpl(url);
     }
 
     @Override
-    public void setMethod(RequestMethod method) {
+    public void setMethod(RequestMethod method) throws UnKnowRequestMethodException {
         switch(method) {
             case GET:
                 this.method = RequestMethod.GET;
@@ -35,17 +42,22 @@ public class RequestLineImpl implements RequestLine {
                 this.method = RequestMethod.HEAD;
                 break;
             default:
-                throw new NotImplementedException();
+                throw new UnKnowRequestMethodException("UnKnow Request Method!");
         }
     }
 
     @Override
-    public void setHttpUrl(HttpUrl httpUrl) {
-        throw new NotImplementedException();
+    public void setHttpUrl(RequestUrl requestUrl) {
+        this.requestUrl = requestUrl;
     }
 
     @Override
-    public void setHttpUrl(String httpUrl) {
-        throw new NotImplementedException();
+    public void setHttpUrl(String httpUrl) throws MalformedURLException, UnsupportedEncodingException {
+        this.requestUrl = new RequestUrlImpl(httpUrl);
+    }
+
+    @Override
+    public RequestMethod getMethod() {
+        return this.method;
     }
 }

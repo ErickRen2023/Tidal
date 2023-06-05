@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class HttpUrlImpl implements HttpUrl{
+public class RequestUrlImpl implements RequestUrl {
 
     private String protocol = "http://";
     private String host;
@@ -20,11 +20,11 @@ public class HttpUrlImpl implements HttpUrl{
     @Nullable private List<String> path = new ArrayList<>();
     @Nullable private HashMap<String, String> parameter = new HashMap<>();
 
-    public HttpUrlImpl(@NotNull String url) throws MalformedURLException, UnsupportedEncodingException {
+    public RequestUrlImpl(@NotNull String url) throws MalformedURLException, UnsupportedEncodingException {
         this.parseUrlByString(url);
     }
 
-    public HttpUrlImpl(@NotNull String protocol, @NotNull String host, @NotNull Integer port, @Nullable List<String> path, @Nullable HashMap<String, String> parameter) {
+    public RequestUrlImpl(@NotNull String protocol, @NotNull String host, @NotNull Integer port, @Nullable List<String> path, @Nullable HashMap<String, String> parameter) {
         this.protocol = protocol;
         this.host = host;
         this.port = port;
@@ -33,7 +33,7 @@ public class HttpUrlImpl implements HttpUrl{
     }
 
     @Override
-    public HttpUrl setProtocol(String protocol) {
+    public RequestUrl setProtocol(String protocol) {
         this.protocol = protocol;
         return this;
     }
@@ -44,7 +44,7 @@ public class HttpUrlImpl implements HttpUrl{
     }
 
     @Override
-    public HttpUrl setHost(String host) {
+    public RequestUrl setHost(String host) {
         this.host = host;
         return this;
     }
@@ -55,7 +55,7 @@ public class HttpUrlImpl implements HttpUrl{
     }
 
     @Override
-    public HttpUrl setPort(Integer port) {
+    public RequestUrl setPort(Integer port) {
         if (port > 65535 || port < 1){
             throw new PortOutOfRangeException("Port is out of range!");
         } else {
@@ -70,13 +70,13 @@ public class HttpUrlImpl implements HttpUrl{
     }
 
     @Override
-    public HttpUrl addPath(String path) {
+    public RequestUrl addPath(String path) {
         this.path.add(path);
         return this;
     }
 
     @Override
-    public HttpUrl setPaths(String path) throws UnsupportedEncodingException {
+    public RequestUrl setPaths(String path) throws UnsupportedEncodingException {
         if (path.startsWith("/")){
             path = path.substring(1);
         }
@@ -88,25 +88,25 @@ public class HttpUrlImpl implements HttpUrl{
     }
 
     @Override
-    public HttpUrl setPaths(List<String> path) {
+    public RequestUrl setPaths(List<String> path) {
         this.path = path;
         return this;
     }
 
     @Override
-    public HttpUrl addParameter(String name, String value) {
+    public RequestUrl addParameter(String name, String value) {
         this.parameter.put(name, value);
         return this;
     }
 
     @Override
-    public HttpUrl setParameter(HashMap<String, String> parameter) {
+    public RequestUrl setParameter(HashMap<String, String> parameter) {
         this.parameter = parameter;
         return this;
     }
 
     @Override
-    public HttpUrl parseUrlByString(String path) throws MalformedURLException, UnsupportedEncodingException {
+    public RequestUrl parseUrlByString(String path) throws MalformedURLException, UnsupportedEncodingException {
         URL url = new URL(path);
         this.setProtocol(url.getProtocol() + "://");
         this.setHost(url.getHost());
