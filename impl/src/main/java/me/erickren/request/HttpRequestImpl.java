@@ -1,15 +1,16 @@
 package me.erickren.request;
 
-import me.erickren.response.HttpResponse;
+import me.erickren.enums.RequestMethod;
+import me.erickren.response.HttpResponseImpl;
 
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.Socket;
 
 public class HttpRequestImpl implements HttpRequest{
-    RequestLine requestLine;
-    RequestHeader requestHeader;
-    RequestData requestData;
+    private RequestLine requestLine;
+    private RequestHeader requestHeader;
+    private RequestData requestData;
 
     public HttpRequestImpl(RequestLine requestLine, RequestHeader requestHeader, RequestData requestData) {
         this.requestLine = requestLine;
@@ -23,6 +24,8 @@ public class HttpRequestImpl implements HttpRequest{
 
     public HttpRequestImpl(String requestLine) throws MalformedURLException, UnsupportedEncodingException {
         this.requestLine = new RequestLineImpl(requestLine);
+        this.requestHeader = new RequestHeaderImpl();
+        this.requestHeader.setHost(this.requestLine.getRequestUrl().getHost());
     }
 
     @Override
@@ -36,8 +39,18 @@ public class HttpRequestImpl implements HttpRequest{
     }
 
     @Override
+    public RequestHeader getRequestHeader() {
+        return this.requestHeader;
+    }
+
+    @Override
     public void setRequestData(RequestData requestData) {
         this.requestData = requestData;
+    }
+
+    @Override
+    public RequestData getRequestData() {
+        return this.requestData;
     }
 
     @Override
@@ -56,69 +69,60 @@ public class HttpRequestImpl implements HttpRequest{
     }
 
     @Override
-    public HttpResponse get() throws IOException {
+    public HttpResponseImpl get() throws IOException {
         this.requestLine.setMethod(RequestMethod.GET);
         return this.request(this);
     }
 
     @Override
-    public HttpResponse post(RequestData data) throws IOException {
+    public HttpResponseImpl post(RequestData data) throws IOException {
         this.requestLine.setMethod(RequestMethod.POST);
         return this.request(this);
     }
 
     @Override
-    public HttpResponse options() throws IOException {
+    public HttpResponseImpl options() throws IOException {
         this.requestLine.setMethod(RequestMethod.OPTIONS);
         return this.request(this);
     }
 
     @Override
-    public HttpResponse put() throws IOException {
+    public HttpResponseImpl put() throws IOException {
         this.requestLine.setMethod(RequestMethod.PUT);
         return this.request(this);
     }
 
     @Override
-    public HttpResponse delete() throws IOException {
+    public HttpResponseImpl delete() throws IOException {
         this.requestLine.setMethod(RequestMethod.DELETE);
         return this.request(this);
     }
 
     @Override
-    public HttpResponse head() throws IOException {
+    public HttpResponseImpl head() throws IOException {
         this.requestLine.setMethod(RequestMethod.HEAD);
         return this.request(this);
     }
 
     @Override
-    public HttpResponse request(HttpRequest request) throws IOException {
+    public HttpResponseImpl request(HttpRequest request) throws IOException {
         String host = request.getRequestLine().getRequestUrl().getHost();
         Integer port = request.getRequestLine().getRequestUrl().getPort();
         StringBuilder requestBuilder = new StringBuilder();
-        requestBuilder.append(request.getRequestLine().getMethod().toString())
-                .append(" ")
-                .append(request.getRequestLine().getRequestUrl().getPath())
-                .append(" ")
-                .append(request.getRequestLine().getHttpVersion())
-                .append("\r\n")
-                .append("Host: ")
-                .append(host)
-                .append("\r\n")
-                .append("Connection: close\r\n\r\n");
+        requestBuilder.append(request.getRequestLine().build())
+                .append(request.getRequestHeader().build())
+                .append("\r\n\r\n");
+        //Build socket and send request
         Socket socket = new Socket(host, port);
         OutputStream outputStream = socket.getOutputStream();
         outputStream.write(requestBuilder.toString().getBytes());
-
-        // 接收HTTP响应
+        // Receive the Response
         InputStream inputStream = socket.getInputStream();
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         String line;
         while ((line = reader.readLine()) != null) {
             System.out.println(line);
         }
-
-        // 关闭连接
         socket.close();
         return null;
     }

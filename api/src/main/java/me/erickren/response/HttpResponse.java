@@ -6,15 +6,12 @@ package me.erickren.response;
  * @since 0.0.1
  */
 public interface HttpResponse {
-    ResponseStatusLine statusLine = null;
-    ResponseHeader header = null;
-    ResponseBody body = null;
 
     /**
      * Set the Http status code of the response.
      * @param code codee
      */
-    void setCode(Integer code);
+    void setHttpCode(Integer code);
 
     /**
      * Set the header of the response.
