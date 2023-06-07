@@ -26,10 +26,22 @@ public interface HttpRequest {
     void setRequestHeader(RequestHeader requestHeader);
 
     /**
+     * Get the request header.
+     * @return Request Header
+     */
+    RequestHeader getRequestHeader();
+
+    /**
      * Set the request data.If the Request method is not POST,the data will not work.
      * @param requestData data
      */
     void setRequestData(RequestData requestData);
+
+    /**
+     * Get the Request Data.
+     * @return Request Data
+     */
+    RequestData getRequestData();
 
     /**
      * Set the request url by String Object.

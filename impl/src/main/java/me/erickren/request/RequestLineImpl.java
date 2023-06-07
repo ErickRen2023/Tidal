@@ -1,5 +1,6 @@
 package me.erickren.request;
 
+import me.erickren.enums.RequestMethod;
 import me.erickren.exception.UnKnowRequestMethodException;
 
 import java.io.UnsupportedEncodingException;
@@ -70,5 +71,17 @@ public class RequestLineImpl implements RequestLine {
     @Override
     public RequestMethod getMethod() {
         return this.method;
+    }
+
+    @Override
+    public String build() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.getMethod().toString())
+                .append(" ")
+                .append(this.getRequestUrl().getPath())
+                .append(" ")
+                .append(this.getHttpVersion())
+                .append("\r\n");
+        return sb.toString();
     }
 }

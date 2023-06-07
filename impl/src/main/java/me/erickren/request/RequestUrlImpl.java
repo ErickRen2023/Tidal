@@ -1,8 +1,6 @@
 package me.erickren.request;
 
 import me.erickren.exception.PortOutOfRangeException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -17,14 +15,14 @@ public class RequestUrlImpl implements RequestUrl {
     private String protocol = "http://";
     private String host;
     private Integer port = 80;
-    @Nullable private List<String> path = new ArrayList<>();
-    @Nullable private HashMap<String, String> parameter = new HashMap<>();
+    private List<String> path = new ArrayList<>();
+    private HashMap<String, String> parameter = new HashMap<>();
 
-    public RequestUrlImpl(@NotNull String url) throws MalformedURLException, UnsupportedEncodingException {
+    public RequestUrlImpl(String url) throws MalformedURLException, UnsupportedEncodingException {
         this.parseUrlByString(url);
     }
 
-    public RequestUrlImpl(@NotNull String protocol, @NotNull String host, @NotNull Integer port, @Nullable List<String> path, @Nullable HashMap<String, String> parameter) {
+    public RequestUrlImpl(String protocol, String host, Integer port, List<String> path, HashMap<String, String> parameter) {
         this.protocol = protocol;
         this.host = host;
         this.port = port;
@@ -39,7 +37,7 @@ public class RequestUrlImpl implements RequestUrl {
     }
 
     @Override
-    public @NotNull String getProtocol() {
+    public String getProtocol() {
         return this.protocol;
     }
 
