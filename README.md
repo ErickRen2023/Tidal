@@ -13,7 +13,7 @@ A http client for java.
 
 # LICENSE
 
-Tidal is released under the (MIT License)[http://github.com/ErickRen2023/Tidal/blob/master/LICENSE]
+Tidal is released under the [MIT License](http://github.com/ErickRen2023/Tidal/blob/master/LICENSE)
 
 ```
 Copyright (c) 2023 ErickRen
