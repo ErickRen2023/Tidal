@@ -2,8 +2,6 @@ package me.erickren.response;
 
 import me.erickren.header.Header;
 
-import java.util.HashMap;
-
 /**
  * Build the response header.
  * @author ErickRen
@@ -11,4 +9,9 @@ import java.util.HashMap;
  */
 public interface ResponseHeader extends Header {
 
+    /**
+     * Set the Status Line.
+     * @param line line
+     */
+    void setStatusLine(ResponseStatusLine line);
 }

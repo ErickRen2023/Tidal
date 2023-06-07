@@ -2,20 +2,15 @@ package me.erickren;
 
 import me.erickren.request.HttpRequest;
 import me.erickren.request.HttpRequestImpl;
-
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import me.erickren.response.HttpResponse;
 
 
 public class Main {
     public static void main(String[] args) throws Exception {
 
-        HttpRequest httpRequest = new HttpRequestImpl("http://www.baidu.com/");
-        httpRequest.get();
-
+        HttpRequest httpRequest = new HttpRequestImpl("http://csdn.com/");
+        HttpResponse httpResponse = httpRequest.get();
+        System.out.println(httpResponse.getBody());
 //        String host = "juejin.cn";
 //        int port = 443;
 //        String request = "GET / HTTP/1.1\r\n" +
