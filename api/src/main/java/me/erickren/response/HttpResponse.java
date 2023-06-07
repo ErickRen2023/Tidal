@@ -30,4 +30,10 @@ public interface HttpResponse {
      * @return http code
      */
     Integer getResponseCode();
+
+    /**
+     * Get the body text.
+     * @return body
+     */
+    String getBody();
 }

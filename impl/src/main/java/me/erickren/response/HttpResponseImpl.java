@@ -26,4 +26,17 @@ public class HttpResponseImpl implements HttpResponse{
     public Integer getResponseCode() {
         return this.statusLine.getHttpCode();
     }
+
+    @Override
+    public String getBody() {
+        return this.responseBody.getBody();
+    }
+
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.responseHeader.build())
+                .append("\n")
+                .append(this.responseBody.getBody());
+        return sb.toString();
+    }
 }

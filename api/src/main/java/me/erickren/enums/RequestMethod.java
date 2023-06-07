@@ -1,4 +1,4 @@
-package me.erickren.request;
+package me.erickren.enums;
 
 public enum RequestMethod {
     GET,

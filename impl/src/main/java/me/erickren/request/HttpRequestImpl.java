@@ -1,7 +1,7 @@
 package me.erickren.request;
 
 import me.erickren.enums.RequestMethod;
-import me.erickren.response.HttpResponseImpl;
+import me.erickren.response.*;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -69,43 +69,43 @@ public class HttpRequestImpl implements HttpRequest{
     }
 
     @Override
-    public HttpResponseImpl get() throws IOException {
+    public HttpResponse get() throws IOException {
         this.requestLine.setMethod(RequestMethod.GET);
         return this.request(this);
     }
 
     @Override
-    public HttpResponseImpl post(RequestData data) throws IOException {
+    public HttpResponse post(RequestData data) throws IOException {
         this.requestLine.setMethod(RequestMethod.POST);
         return this.request(this);
     }
 
     @Override
-    public HttpResponseImpl options() throws IOException {
+    public HttpResponse options() throws IOException {
         this.requestLine.setMethod(RequestMethod.OPTIONS);
         return this.request(this);
     }
 
     @Override
-    public HttpResponseImpl put() throws IOException {
+    public HttpResponse put() throws IOException {
         this.requestLine.setMethod(RequestMethod.PUT);
         return this.request(this);
     }
 
     @Override
-    public HttpResponseImpl delete() throws IOException {
+    public HttpResponse delete() throws IOException {
         this.requestLine.setMethod(RequestMethod.DELETE);
         return this.request(this);
     }
 
     @Override
-    public HttpResponseImpl head() throws IOException {
+    public HttpResponse head() throws IOException {
         this.requestLine.setMethod(RequestMethod.HEAD);
         return this.request(this);
     }
 
     @Override
-    public HttpResponseImpl request(HttpRequest request) throws IOException {
+    public HttpResponse request(HttpRequest request) throws IOException {
         String host = request.getRequestLine().getRequestUrl().getHost();
         Integer port = request.getRequestLine().getRequestUrl().getPort();
         StringBuilder requestBuilder = new StringBuilder();
@@ -118,12 +118,44 @@ public class HttpRequestImpl implements HttpRequest{
         outputStream.write(requestBuilder.toString().getBytes());
         // Receive the Response
         InputStream inputStream = socket.getInputStream();
+
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        // Parse the Response
         String line;
+        int statusCode = -1;
+        ResponseStatusLine responseStatusLine = new ResponseStatusLineImpl();
+        ResponseHeader responseHeader = new ResponseHeaderImpl();
+        ResponseBody responseBody = new ResponseBodyImpl();
+
+        // Parse the Headers
         while ((line = reader.readLine()) != null) {
-            System.out.println(line);
+            if (statusCode == -1) {
+                // Parse the Http Code
+                String[] statusLine = line.split(" ");
+                statusCode = Integer.parseInt(statusLine[1]);
+            } else if (line.isEmpty()) {
+                // End of Headers
+                break;
+            } else {
+                // Parse the Headers
+                String[] headerParts = line.split(": ");
+                responseHeader.setHeader(headerParts[0], headerParts[1]);
+            }
         }
+
+        // Parse the Response Body
+        StringBuilder bodySb = new StringBuilder();
+        while ((line = reader.readLine()) != null){
+            bodySb.append(line);
+        }
+        // Here if you request the http://csdn.com .It will block.... Why???
+        responseBody.setBody(bodySb.toString());
+        responseHeader.setStatusLine(responseStatusLine);
+        HttpResponse httpResponse = new HttpResponseImpl();
+        httpResponse.setHeader(responseHeader);
+        httpResponse.setBody(responseBody);
+
         socket.close();
-        return null;
+        return httpResponse;
     }
 }

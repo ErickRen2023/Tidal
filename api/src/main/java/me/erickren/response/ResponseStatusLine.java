@@ -6,8 +6,6 @@ package me.erickren.response;
  * @since 0.0.1
  */
 public interface ResponseStatusLine {
-    String httpVersion = "HTTP/1.0";
-    Integer httpCode = 0;
 
     /**
      * Set the HttpCode.
@@ -20,4 +18,28 @@ public interface ResponseStatusLine {
      * @return code
      */
     Integer getHttpCode();
+
+    /**
+     * Set the HttpCode description.
+     * @param description description
+     */
+    void setHttpCodeDescription(String description);
+
+    /**
+     * Get the description.
+     * @return description
+     */
+    String getHttpCodeDescription();
+
+    /**
+     * Get the HttpVersion.
+     * @return version
+     */
+    String getHttpVersion();
+
+    /**
+     * Build the statusLine
+     * @return line
+     */
+    String build();
 }

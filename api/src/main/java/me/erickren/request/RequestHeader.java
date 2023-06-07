@@ -1,23 +1,24 @@
 package me.erickren.request;
 
-import java.util.HashMap;
+import me.erickren.header.Header;
 
 /**
  * Build the Request header.
  * @author ErickRen
  * @since 0.0.1
  */
-public interface RequestHeader {
+public interface RequestHeader extends Header {
 
     /**
-     * Add a header to Request Header.
-     * @param header header
+     * Set the Accept-Language.
+     * @param value language
      */
-    void addHeader(String header);
+    void setAcceptLanguage(String value);
 
     /**
-     * Set the header on Request Header
-     * @param headers HashMap[String, String]
+     * Set the Header Host.
+     * @param host host
      */
-    void setHeader(HashMap<String, String> headers);
+    void setHost(String host);
+
 }

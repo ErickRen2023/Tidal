@@ -1,5 +1,7 @@
 package me.erickren.request;
 
+import me.erickren.enums.RequestMethod;
+
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 
@@ -45,4 +47,10 @@ public interface RequestLine {
      * @return method
      */
     RequestMethod getMethod();
+
+    /**
+     * Build the request line to String Object.
+     * @return line
+     */
+    String build();
 }
