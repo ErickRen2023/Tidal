@@ -14,4 +14,17 @@ public interface ResponseHeader extends Header {
      * @param line line
      */
     void setStatusLine(ResponseStatusLine line);
+
+    /**
+     * Set the content length.
+     * @param contentLength length
+     */
+    void setContentLength(String contentLength);
+
+    /**
+     * Get the content length.
+     * @return String content length.
+     */
+    String getContentLength();
+
 }

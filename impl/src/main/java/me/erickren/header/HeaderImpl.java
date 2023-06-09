@@ -27,4 +27,10 @@ public class HeaderImpl implements Header {
     public HashMap<String, String> getHeaders() {
         return this.headers;
     }
+
+    @Override
+    public String getHeader(String headerKey) {
+        return this.headers.get(headerKey);
+    }
+
 }
