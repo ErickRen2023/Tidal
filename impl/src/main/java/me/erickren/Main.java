@@ -8,9 +8,10 @@ import me.erickren.response.HttpResponse;
 public class Main {
     public static void main(String[] args) throws Exception {
 
-        HttpRequest httpRequest = new HttpRequestImpl("http://csdn.com/");
+        HttpRequest httpRequest = new HttpRequestImpl("http://www.wenku8.com/");
+//        HttpRequest httpRequest = new HttpRequestImpl("http://csdn.com/");
         HttpResponse httpResponse = httpRequest.get();
-        System.out.println(httpResponse.getBody());
+        System.out.println(httpResponse);
 //        String host = "juejin.cn";
 //        int port = 443;
 //        String request = "GET / HTTP/1.1\r\n" +

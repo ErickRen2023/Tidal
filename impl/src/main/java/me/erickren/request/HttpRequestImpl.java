@@ -7,6 +7,7 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.Socket;
 
+
 public class HttpRequestImpl implements HttpRequest{
     private RequestLine requestLine;
     private RequestHeader requestHeader;
@@ -126,7 +127,6 @@ public class HttpRequestImpl implements HttpRequest{
         ResponseStatusLine responseStatusLine = new ResponseStatusLineImpl();
         ResponseHeader responseHeader = new ResponseHeaderImpl();
         ResponseBody responseBody = new ResponseBodyImpl();
-
         // Parse the Headers
         while ((line = reader.readLine()) != null) {
             if (statusCode == -1) {
@@ -142,20 +142,26 @@ public class HttpRequestImpl implements HttpRequest{
                 responseHeader.setHeader(headerParts[0], headerParts[1]);
             }
         }
-
         // Parse the Response Body
+        int length = Integer.parseInt(responseHeader.getContentLength());
         StringBuilder bodySb = new StringBuilder();
-        while ((line = reader.readLine()) != null){
-            bodySb.append(line);
+        char[] buffer = new char[1024];
+        int bytesRead;
+        int totalBytesRead = 0;
+        while ((bytesRead = reader.read(buffer)) != -1) {
+            bodySb.append(buffer, 0, bytesRead);
+            totalBytesRead += bytesRead;
+            if (totalBytesRead >= length) {
+                break;
+            }
         }
-        // Here if you request the http://csdn.com .It will block.... Why???
+        reader.close();
+        socket.close();
         responseBody.setBody(bodySb.toString());
         responseHeader.setStatusLine(responseStatusLine);
         HttpResponse httpResponse = new HttpResponseImpl();
         httpResponse.setHeader(responseHeader);
         httpResponse.setBody(responseBody);
-
-        socket.close();
         return httpResponse;
     }
 }

@@ -27,4 +27,11 @@ public interface Header {
      * @return HashMap headers
      */
     HashMap<String, String> getHeaders();
+
+    /**
+     * Get the value by the key
+     * @param headerKey key
+     * @return header value
+     */
+    String getHeader(String headerKey);
 }
