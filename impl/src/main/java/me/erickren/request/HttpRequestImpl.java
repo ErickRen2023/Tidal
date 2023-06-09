@@ -133,6 +133,8 @@ public class HttpRequestImpl implements HttpRequest{
                 // Parse the Http Code
                 String[] statusLine = line.split(" ");
                 statusCode = Integer.parseInt(statusLine[1]);
+                responseStatusLine.setHttpCode(statusCode);
+                responseStatusLine.setHttpCodeDescription(statusLine[2]);
             } else if (line.isEmpty()) {
                 // End of Headers
                 break;
