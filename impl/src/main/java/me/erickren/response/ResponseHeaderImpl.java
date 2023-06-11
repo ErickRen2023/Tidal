@@ -12,13 +12,18 @@ public class ResponseHeaderImpl extends HeaderImpl implements ResponseHeader {
     }
 
     @Override
+    public ResponseStatusLine getStatusLine() {
+        return this.statusLine;
+    }
+
+    @Override
     public void setContentLength(String contentLength) {
         this.setHeader("Content-Length", contentLength);
     }
 
     @Override
     public String getContentLength() {
-        return this.getHeader("Content-Length");
+        return this.getHeaderValue("Content-Length");
     }
 
     @Override

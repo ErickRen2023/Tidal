@@ -29,7 +29,7 @@ public class HeaderImpl implements Header {
     }
 
     @Override
-    public String getHeader(String headerKey) {
+    public String getHeaderValue(String headerKey) {
         return this.headers.get(headerKey);
     }
 

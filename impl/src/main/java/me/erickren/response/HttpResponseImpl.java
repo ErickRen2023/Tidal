@@ -1,20 +1,35 @@
 package me.erickren.response;
 
-public class HttpResponseImpl implements HttpResponse{
+import me.erickren.header.HeaderImpl;
 
-    private ResponseStatusLine statusLine;
+public class HttpResponseImpl implements HttpResponse {
     private ResponseHeader responseHeader;
     private ResponseBody responseBody;
 
 
     @Override
     public void setHttpCode(Integer code) {
-        this.statusLine.setHttpCode(code);
+        this.responseHeader.getStatusLine().setHttpCode(code);
     }
 
     @Override
     public void setHeader(ResponseHeader header) {
         this.responseHeader = header;
+    }
+
+    @Override
+    public String getHeaderValue(String headerKey) {
+        return responseHeader.getHeaderValue(headerKey);
+    }
+
+    @Override
+    public String getHeader() {
+        return this.responseHeader.build();
+    }
+
+    @Override
+    public ResponseHeader getHeaderObject() {
+        return this.responseHeader;
     }
 
     @Override
@@ -24,7 +39,7 @@ public class HttpResponseImpl implements HttpResponse{
 
     @Override
     public Integer getResponseCode() {
-        return this.statusLine.getHttpCode();
+        return this.responseHeader.getStatusLine().getHttpCode();
     }
 
     @Override

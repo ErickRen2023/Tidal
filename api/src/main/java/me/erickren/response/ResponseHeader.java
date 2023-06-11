@@ -16,6 +16,12 @@ public interface ResponseHeader extends Header {
     void setStatusLine(ResponseStatusLine line);
 
     /**
+     * Get the status line.
+     * @return status line
+     */
+    ResponseStatusLine getStatusLine();
+
+    /**
      * Set the content length.
      * @param contentLength length
      */

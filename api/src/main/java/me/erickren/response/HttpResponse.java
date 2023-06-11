@@ -20,6 +20,25 @@ public interface HttpResponse {
     void setHeader(ResponseHeader header);
 
     /**
+     * Get header value by key
+     * @param headerKey key
+     * @return value
+     */
+    String getHeaderValue(String headerKey);
+
+    /**
+     * Get the header object.
+     * @return ResponseHeader
+     */
+    ResponseHeader getHeaderObject();
+
+    /**
+     * Get the header text.
+     * @return header text
+     */
+    String getHeader();
+
+    /**
      * Set the body of the response.
      * @param body body
      */
