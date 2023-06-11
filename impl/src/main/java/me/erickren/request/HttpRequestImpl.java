@@ -13,6 +13,10 @@ public class HttpRequestImpl implements HttpRequest{
     private RequestHeader requestHeader;
     private RequestData requestData;
 
+    // If the source is false, it will automatically request the moved link.
+    // eg: The status code is 301 and header has Location.It will automatically build a new request for the new link.
+    private boolean source = false;
+
     public HttpRequestImpl(RequestLine requestLine, RequestHeader requestHeader, RequestData requestData) {
         this.requestLine = requestLine;
         this.requestHeader = requestHeader;
@@ -24,9 +28,14 @@ public class HttpRequestImpl implements HttpRequest{
     }
 
     public HttpRequestImpl(String requestLine) throws MalformedURLException, UnsupportedEncodingException {
+        this(requestLine, false);
+    }
+
+    public HttpRequestImpl(String requestLine, boolean source) throws MalformedURLException, UnsupportedEncodingException {
         this.requestLine = new RequestLineImpl(requestLine);
         this.requestHeader = new RequestHeaderImpl();
         this.requestHeader.setHost(this.requestLine.getRequestUrl().getHost());
+        this.source = source;
     }
 
     @Override
@@ -107,6 +116,15 @@ public class HttpRequestImpl implements HttpRequest{
 
     @Override
     public HttpResponse request(HttpRequest request) throws IOException {
+        if (request.getRequestLine().getRequestUrl().getProtocol().contains("ttps")) {
+            return httpsRequest(request);
+        } else {
+            return httpRequest(request);
+        }
+    }
+
+    @Override
+    public HttpResponse httpRequest(HttpRequest request) throws IOException {
         String host = request.getRequestLine().getRequestUrl().getHost();
         Integer port = request.getRequestLine().getRequestUrl().getPort();
         StringBuilder requestBuilder = new StringBuilder();
@@ -164,6 +182,18 @@ public class HttpRequestImpl implements HttpRequest{
         HttpResponse httpResponse = new HttpResponseImpl();
         httpResponse.setHeader(responseHeader);
         httpResponse.setBody(responseBody);
-        return httpResponse;
+        if (httpResponse.getResponseCode() / 100 == 3) {
+            request.getRequestLine().setHttpUrl(httpResponse.getHeaderValue("Location"));
+            return this.request(request);
+        } else {
+            return httpResponse;
+        }
     }
+
+    @Override
+    public HttpResponse httpsRequest(HttpRequest request) {
+        return null;
+    }
+
+
 }

@@ -33,5 +33,5 @@ public interface Header {
      * @param headerKey key
      * @return header value
      */
-    String getHeader(String headerKey);
+    String getHeaderValue(String headerKey);
 }

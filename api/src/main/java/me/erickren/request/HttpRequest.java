@@ -99,8 +99,22 @@ public interface HttpRequest {
 
     /**
      * Send the request by the RequestLine method.
-     * @return
+     * @return HttpResponse
      */
     HttpResponse request(HttpRequest request) throws IOException;
+
+    /**
+     * Http Request
+     * @param request request
+     * @return HttpResponse
+     */
+    HttpResponse httpRequest(HttpRequest request) throws IOException;
+
+    /**
+     * Https Request
+     * @param request request
+     * @return HttpResponse
+     */
+    HttpResponse httpsRequest(HttpRequest request);
 
 }
