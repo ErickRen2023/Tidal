@@ -3,6 +3,8 @@ package me.erickren.request;
 import me.erickren.enums.RequestMethod;
 import me.erickren.response.*;
 
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.Socket;
@@ -115,31 +117,19 @@ public class HttpRequestImpl implements HttpRequest{
     }
 
     @Override
-    public HttpResponse request(HttpRequest request) throws IOException {
-        if (request.getRequestLine().getRequestUrl().getProtocol().contains("ttps")) {
-            return httpsRequest(request);
-        } else {
-            return httpRequest(request);
-        }
-    }
+    public String buildRequestText(HttpRequest request) {
 
-    @Override
-    public HttpResponse httpRequest(HttpRequest request) throws IOException {
-        String host = request.getRequestLine().getRequestUrl().getHost();
-        Integer port = request.getRequestLine().getRequestUrl().getPort();
         StringBuilder requestBuilder = new StringBuilder();
         requestBuilder.append(request.getRequestLine().build())
                 .append(request.getRequestHeader().build())
                 .append("\r\n\r\n");
-        //Build socket and send request
-        Socket socket = new Socket(host, port);
-        OutputStream outputStream = socket.getOutputStream();
-        outputStream.write(requestBuilder.toString().getBytes());
-        // Receive the Response
-        InputStream inputStream = socket.getInputStream();
+        return requestBuilder.toString();
+    }
 
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+    @Override
+    public HttpResponse parseResponse(InputStream stream) throws IOException {
         // Parse the Response
+        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
         String line;
         int statusCode = -1;
         ResponseStatusLine responseStatusLine = new ResponseStatusLineImpl();
@@ -176,13 +166,40 @@ public class HttpRequestImpl implements HttpRequest{
             }
         }
         reader.close();
-        socket.close();
         responseBody.setBody(bodySb.toString());
         responseHeader.setStatusLine(responseStatusLine);
         HttpResponse httpResponse = new HttpResponseImpl();
         httpResponse.setHeader(responseHeader);
         httpResponse.setBody(responseBody);
-        if (httpResponse.getResponseCode() / 100 == 3) {
+        return httpResponse;
+    }
+
+    @Override
+    public HttpResponse request(HttpRequest request) throws IOException {
+        if (request.getRequestLine().getRequestUrl().getProtocol().contains("ttps")) {
+            return httpsRequest(request);
+        } else {
+
+            return httpRequest(request);
+        }
+    }
+
+
+    @Override
+    public HttpResponse httpRequest(HttpRequest request) throws IOException {
+        String host = request.getRequestLine().getRequestUrl().getHost();
+        Integer port = request.getRequestLine().getRequestUrl().getPort();
+        String requestText = buildRequestText(request);
+        // Build socket and send request
+        Socket socket = new Socket(host, port);
+        OutputStream outputStream = socket.getOutputStream();
+        outputStream.write(requestText.getBytes());
+        // Receive the Response
+        InputStream inputStream = socket.getInputStream();
+        // parse the response
+        HttpResponse httpResponse = parseResponse(inputStream);
+        socket.close();
+        if (httpResponse.getResponseCode() / 100 == 3 && !source) {
             request.getRequestLine().setHttpUrl(httpResponse.getHeaderValue("Location"));
             return this.request(request);
         } else {
@@ -191,9 +208,26 @@ public class HttpRequestImpl implements HttpRequest{
     }
 
     @Override
-    public HttpResponse httpsRequest(HttpRequest request) {
-        return null;
-    }
+    public HttpResponse httpsRequest(HttpRequest request) throws IOException {
+        String host = request.getRequestLine().getRequestUrl().getHost();
+        Integer port = request.getRequestLine().getRequestUrl().getPort();
+        String requestText = buildRequestText(request);
 
+        SSLSocketFactory factory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+        SSLSocket socket = (SSLSocket) factory.createSocket(host, port);
+        socket.startHandshake();
+
+        OutputStream os = socket.getOutputStream();
+        os.write(requestText.getBytes());
+        os.flush();
+        HttpResponse httpResponse = parseResponse(socket.getInputStream());
+        socket.close();
+        if (httpResponse.getResponseCode() / 100 == 3) {
+            request.getRequestLine().setHttpUrl(httpResponse.getHeaderValue("Location"));
+            return request(request);
+        } else {
+            return httpResponse;
+        }
+    }
 
 }

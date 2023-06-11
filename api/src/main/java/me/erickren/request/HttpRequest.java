@@ -3,6 +3,7 @@ package me.erickren.request;
 import me.erickren.response.HttpResponse;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 
@@ -98,6 +99,19 @@ public interface HttpRequest {
     HttpResponse head() throws IOException;
 
     /**
+     * Build the request text.
+     * @return request text
+     */
+    String buildRequestText(HttpRequest request);
+
+    /**
+     * Parse the response
+     * @param stream InputStream
+     * @return response
+     */
+    HttpResponse parseResponse(InputStream stream) throws IOException;
+
+    /**
      * Send the request by the RequestLine method.
      * @return HttpResponse
      */
@@ -115,6 +129,6 @@ public interface HttpRequest {
      * @param request request
      * @return HttpResponse
      */
-    HttpResponse httpsRequest(HttpRequest request);
+    HttpResponse httpsRequest(HttpRequest request) throws IOException;
 
 }
