@@ -33,4 +33,10 @@ public interface ResponseHeader extends Header {
      */
     String getContentLength();
 
+    /**
+     * Get the transfer encoding type
+     * @return bool
+     */
+    boolean isChucked();
+
 }

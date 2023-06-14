@@ -2,6 +2,8 @@ package me.erickren.response;
 
 import me.erickren.header.HeaderImpl;
 
+import java.util.Objects;
+
 public class ResponseHeaderImpl extends HeaderImpl implements ResponseHeader {
 
     private ResponseStatusLine statusLine;
@@ -24,6 +26,11 @@ public class ResponseHeaderImpl extends HeaderImpl implements ResponseHeader {
     @Override
     public String getContentLength() {
         return this.getHeaderValue("Content-Length");
+    }
+
+    @Override
+    public boolean isChucked() {
+        return (Objects.equals(getHeaderValue("Transfer-Encoding"), "chucked"));
     }
 
     @Override
