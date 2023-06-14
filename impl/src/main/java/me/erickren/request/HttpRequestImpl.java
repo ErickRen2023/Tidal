@@ -118,7 +118,6 @@ public class HttpRequestImpl implements HttpRequest{
 
     @Override
     public String buildRequestText(HttpRequest request) {
-
         StringBuilder requestBuilder = new StringBuilder();
         requestBuilder.append(request.getRequestLine().build())
                 .append(request.getRequestHeader().build())
@@ -136,6 +135,7 @@ public class HttpRequestImpl implements HttpRequest{
         ResponseHeader responseHeader = new ResponseHeaderImpl();
         ResponseBody responseBody = new ResponseBodyImpl();
         // Parse the Headers
+        int len = 0;
         while ((line = reader.readLine()) != null) {
             if (statusCode == -1) {
                 // Parse the Http Code
@@ -152,17 +152,42 @@ public class HttpRequestImpl implements HttpRequest{
                 responseHeader.setHeader(headerParts[0], headerParts[1]);
             }
         }
-        // Parse the Response Body
-        int length = Integer.parseInt(responseHeader.getContentLength());
+
         StringBuilder bodySb = new StringBuilder();
-        char[] buffer = new char[1024];
-        int bytesRead;
-        int totalBytesRead = 0;
-        while ((bytesRead = reader.read(buffer)) != -1) {
-            bodySb.append(buffer, 0, bytesRead);
-            totalBytesRead += bytesRead;
-            if (totalBytesRead >= length) {
-                break;
+        // Parse the Response Body
+        if (responseHeader.getContentLength() != null) {
+            // Content-Length
+            int length = Integer.parseInt(responseHeader.getContentLength());
+            char[] buffer = new char[1024];
+            int bytesRead;
+            int totalBytesRead = 0;
+            while ((bytesRead = reader.read(buffer)) != -1) {
+                bodySb.append(buffer, 0, bytesRead);
+                totalBytesRead += bytesRead;
+                if (totalBytesRead >= length) {
+                    break;
+                }
+            }
+        } else {
+            // Chucked
+            while ((line = reader.readLine()) != null) {
+                int chunkSize = Integer.parseInt(line, 16); // headers len: 687
+                if (chunkSize == 0) {
+                    // End of the response
+                    // Fuck you bilibili.
+                    reader.readLine(); // Skip the final CRLF after the last chunk
+                    break;
+                }
+                int point = 0;
+                while (point <= chunkSize) {
+                    char[] buffer = new char[1];
+                    reader.read(buffer, 0,  1);
+                    if (String.valueOf(buffer[0]).equals("\n")) {
+                        break;
+                    }
+                    bodySb.append(buffer);
+                    point++;
+                }
             }
         }
         reader.close();
@@ -176,7 +201,7 @@ public class HttpRequestImpl implements HttpRequest{
 
     @Override
     public HttpResponse request(HttpRequest request) throws IOException {
-        if (request.getRequestLine().getRequestUrl().getProtocol().contains("ttps")) {
+        if (request.getRequestLine().getRequestUrl().getProtocol().contains("https")) {
             return httpsRequest(request);
         } else {
 
@@ -212,15 +237,14 @@ public class HttpRequestImpl implements HttpRequest{
         String host = request.getRequestLine().getRequestUrl().getHost();
         Integer port = request.getRequestLine().getRequestUrl().getPort();
         String requestText = buildRequestText(request);
-
         SSLSocketFactory factory = (SSLSocketFactory) SSLSocketFactory.getDefault();
         SSLSocket socket = (SSLSocket) factory.createSocket(host, port);
         socket.startHandshake();
-
         OutputStream os = socket.getOutputStream();
         os.write(requestText.getBytes());
         os.flush();
         HttpResponse httpResponse = parseResponse(socket.getInputStream());
+        os.close();
         socket.close();
         if (httpResponse.getResponseCode() / 100 == 3) {
             request.getRequestLine().setHttpUrl(httpResponse.getHeaderValue("Location"));
